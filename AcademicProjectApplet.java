@@ -12,6 +12,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DecimalFormat;
 
 /*
@@ -76,7 +79,9 @@ public class AcademicProjectApplet extends Frame implements ActionListener {
     private Label lblResultPercentage;
     private Label lblResultGrade;
     private Label lblResultStatus;
+    private Label lblResultMessage;
     private TextArea txtFeedbackResult;
+    private Button btnSaveCSV;
     private Button btnNewEvaluation;
 
     // Data objects (one object for each model class)
@@ -104,8 +109,9 @@ public class AcademicProjectApplet extends Frame implements ActionListener {
         decimalFormat = new DecimalFormat("0.00");
 
         // Window size
-        setSize(440, 480);
-        setResizable(false);
+        setSize(1425, 1170);
+        setResizable(true);
+        setLocationRelativeTo(null);
 
         // Close the window when the user clicks the X button
         addWindowListener(new WindowAdapter() {
@@ -119,7 +125,7 @@ public class AcademicProjectApplet extends Frame implements ActionListener {
         cardLayout = new CardLayout();
         mainContainer = new Panel();
         mainContainer.setLayout(cardLayout);
-        mainContainer.setBackground(Color.LIGHT_GRAY);
+        mainContainer.setBackground(new Color(245, 245, 245));
 
         // Build all four screens
         createLoginPanel();
@@ -150,40 +156,46 @@ public class AcademicProjectApplet extends Frame implements ActionListener {
     private void createLoginPanel() {
         loginPanel = new Panel();
         loginPanel.setLayout(null);
-        loginPanel.setBackground(Color.WHITE);
+        loginPanel.setBackground(new Color(250, 250, 250));
 
         lblLoginTitle = new Label("Academic Project Evaluation System");
-        lblLoginTitle.setFont(new Font("Arial", Font.BOLD, 16));
+        lblLoginTitle.setFont(new Font("Arial", Font.BOLD, 42));
         lblLoginTitle.setAlignment(Label.CENTER);
-        lblLoginTitle.setBounds(20, 40, 400, 30);
+        lblLoginTitle.setBounds((getWidth() > 0 ? (getWidth() - 1230) / 2 : 60), 150, 1230, 67);
         loginPanel.add(lblLoginTitle);
 
         lblUsername = new Label("Username:");
-        lblUsername.setBounds(60, 120, 80, 25);
+        lblUsername.setFont(new Font("Arial", Font.PLAIN, 24));
+        lblUsername.setBounds(375, 315, 180, 52);
         loginPanel.add(lblUsername);
 
         txtUsername = new TextField(15);
-        txtUsername.setBounds(150, 120, 180, 25);
+        txtUsername.setFont(new Font("Arial", Font.PLAIN, 24));
+        txtUsername.setBounds(570, 315, 390, 52);
         loginPanel.add(txtUsername);
 
         lblPassword = new Label("Password:");
-        lblPassword.setBounds(60, 170, 80, 25);
+        lblPassword.setFont(new Font("Arial", Font.PLAIN, 24));
+        lblPassword.setBounds(375, 412, 180, 52);
         loginPanel.add(lblPassword);
 
         txtPassword = new TextField(15);
+        txtPassword.setFont(new Font("Arial", Font.PLAIN, 24));
         // This makes the typed characters appear as stars
         txtPassword.setEchoChar('*');
-        txtPassword.setBounds(150, 170, 180, 25);
+        txtPassword.setBounds(570, 412, 390, 52);
         loginPanel.add(txtPassword);
 
         lblLoginError = new Label("");
+        lblLoginError.setFont(new Font("Arial", Font.PLAIN, 21));
         lblLoginError.setForeground(Color.RED);
         lblLoginError.setAlignment(Label.CENTER);
-        lblLoginError.setBounds(20, 210, 400, 25);
+        lblLoginError.setBounds(60, 495, 1230, 52);
         loginPanel.add(lblLoginError);
 
         btnLogin = new Button("Login");
-        btnLogin.setBounds(160, 250, 100, 30);
+        btnLogin.setFont(new Font("Arial", Font.BOLD, 24));
+        btnLogin.setBounds(592, 585, 240, 63);
         btnLogin.addActionListener(this);
         loginPanel.add(btnLogin);
     }
@@ -194,48 +206,57 @@ public class AcademicProjectApplet extends Frame implements ActionListener {
     private void createStudentDetailsPanel() {
         studentDetailsPanel = new Panel();
         studentDetailsPanel.setLayout(null);
-        studentDetailsPanel.setBackground(Color.WHITE);
+        studentDetailsPanel.setBackground(new Color(250, 250, 250));
 
         Label lblStudentTitle = new Label("Student Details");
-        lblStudentTitle.setFont(new Font("Arial", Font.BOLD, 18));
+        lblStudentTitle.setFont(new Font("Arial", Font.BOLD, 39));
         lblStudentTitle.setAlignment(Label.CENTER);
-        lblStudentTitle.setBounds(50, 40, 340, 30);
+        lblStudentTitle.setBounds(150, 82, 900, 63);
         studentDetailsPanel.add(lblStudentTitle);
 
         Label lblStudentName = new Label("Student Name:");
-        lblStudentName.setBounds(50, 100, 100, 25);
+        lblStudentName.setFont(new Font("Arial", Font.PLAIN, 24));
+        lblStudentName.setBounds(180, 217, 225, 52);
         studentDetailsPanel.add(lblStudentName);
 
         txtStudentName = new TextField(15);
-        txtStudentName.setBounds(160, 100, 180, 25);
+        txtStudentName.setFont(new Font("Arial", Font.PLAIN, 24));
+        txtStudentName.setBounds(435, 217, 420, 52);
         studentDetailsPanel.add(txtStudentName);
 
         Label lblRollNumber = new Label("Roll Number:");
-        lblRollNumber.setBounds(50, 150, 100, 25);
+        lblRollNumber.setFont(new Font("Arial", Font.PLAIN, 24));
+        lblRollNumber.setBounds(180, 322, 225, 52);
         studentDetailsPanel.add(lblRollNumber);
 
         txtRollNumber = new TextField(15);
-        txtRollNumber.setBounds(160, 150, 180, 25);
+        txtRollNumber.setFont(new Font("Arial", Font.PLAIN, 24));
+        txtRollNumber.setBounds(435, 322, 420, 52);
         studentDetailsPanel.add(txtRollNumber);
 
         Label lblProjectName = new Label("Project Name:");
-        lblProjectName.setBounds(50, 200, 100, 25);
+        lblProjectName.setFont(new Font("Arial", Font.PLAIN, 24));
+        lblProjectName.setBounds(180, 427, 225, 52);
         studentDetailsPanel.add(lblProjectName);
 
         txtProjectName = new TextField(15);
-        txtProjectName.setBounds(160, 200, 180, 25);
+        txtProjectName.setFont(new Font("Arial", Font.PLAIN, 24));
+        txtProjectName.setBounds(435, 427, 420, 52);
         studentDetailsPanel.add(txtProjectName);
 
         Label lblGuideName = new Label("Guide Name:");
-        lblGuideName.setBounds(50, 250, 100, 25);
+        lblGuideName.setFont(new Font("Arial", Font.PLAIN, 24));
+        lblGuideName.setBounds(180, 532, 225, 52);
         studentDetailsPanel.add(lblGuideName);
 
         txtGuideName = new TextField(15);
-        txtGuideName.setBounds(160, 250, 180, 25);
+        txtGuideName.setFont(new Font("Arial", Font.PLAIN, 24));
+        txtGuideName.setBounds(435, 532, 420, 52);
         studentDetailsPanel.add(txtGuideName);
 
         btnNext = new Button("Next");
-        btnNext.setBounds(160, 300, 100, 30);
+        btnNext.setFont(new Font("Arial", Font.BOLD, 24));
+        btnNext.setBounds(480, 660, 240, 63);
         btnNext.addActionListener(this);
         studentDetailsPanel.add(btnNext);
     }
@@ -246,102 +267,124 @@ public class AcademicProjectApplet extends Frame implements ActionListener {
     private void createEvaluationPanel() {
         evaluationPanel = new Panel();
         evaluationPanel.setLayout(null);
-        evaluationPanel.setBackground(Color.WHITE);
+        evaluationPanel.setBackground(new Color(250, 250, 250));
 
         Label lblEvalTitle = new Label("Project Evaluation");
-        lblEvalTitle.setFont(new Font("Arial", Font.BOLD, 18));
+        lblEvalTitle.setFont(new Font("Arial", Font.BOLD, 39));
         lblEvalTitle.setAlignment(Label.CENTER);
-        lblEvalTitle.setBounds(50, 20, 340, 25);
+        lblEvalTitle.setBounds(150, 37, 900, 57);
         evaluationPanel.add(lblEvalTitle);
 
         lblProjectIdea = new Label("Project Idea:");
-        lblProjectIdea.setBounds(50, 70, 100, 20);
+        lblProjectIdea.setFont(new Font("Arial", Font.PLAIN, 24));
+        lblProjectIdea.setBounds(180, 135, 225, 45);
         evaluationPanel.add(lblProjectIdea);
 
         txtProjectIdea = new TextField(5);
-        txtProjectIdea.setBounds(170, 70, 60, 20);
+        txtProjectIdea.setFont(new Font("Arial", Font.PLAIN, 24));
+        txtProjectIdea.setBounds(450, 135, 135, 45);
         evaluationPanel.add(txtProjectIdea);
 
         Label lblMaxIdea = new Label("/ 10");
-        lblMaxIdea.setBounds(235, 70, 50, 20);
+        lblMaxIdea.setFont(new Font("Arial", Font.PLAIN, 24));
+        lblMaxIdea.setBounds(600, 135, 90, 45);
         evaluationPanel.add(lblMaxIdea);
 
         Label lblImplementation = new Label("Implementation:");
-        lblImplementation.setBounds(50, 100, 110, 20);
+        lblImplementation.setFont(new Font("Arial", Font.PLAIN, 24));
+        lblImplementation.setBounds(180, 202, 255, 45);
         evaluationPanel.add(lblImplementation);
 
         txtImplementation = new TextField(5);
-        txtImplementation.setBounds(170, 100, 60, 20);
+        txtImplementation.setFont(new Font("Arial", Font.PLAIN, 24));
+        txtImplementation.setBounds(450, 202, 135, 45);
         evaluationPanel.add(txtImplementation);
 
         Label lblMaxImpl = new Label("/ 20");
-        lblMaxImpl.setBounds(235, 100, 50, 20);
+        lblMaxImpl.setFont(new Font("Arial", Font.PLAIN, 24));
+        lblMaxImpl.setBounds(600, 202, 90, 45);
         evaluationPanel.add(lblMaxImpl);
 
         Label lblDocumentation = new Label("Documentation:");
-        lblDocumentation.setBounds(50, 130, 110, 20);
+        lblDocumentation.setFont(new Font("Arial", Font.PLAIN, 24));
+        lblDocumentation.setBounds(180, 270, 255, 45);
         evaluationPanel.add(lblDocumentation);
 
         txtDocumentation = new TextField(5);
-        txtDocumentation.setBounds(170, 130, 60, 20);
+        txtDocumentation.setFont(new Font("Arial", Font.PLAIN, 24));
+        txtDocumentation.setBounds(450, 270, 135, 45);
         evaluationPanel.add(txtDocumentation);
 
         Label lblMaxDoc = new Label("/ 20");
-        lblMaxDoc.setBounds(235, 130, 50, 20);
+        lblMaxDoc.setFont(new Font("Arial", Font.PLAIN, 24));
+        lblMaxDoc.setBounds(600, 270, 90, 45);
         evaluationPanel.add(lblMaxDoc);
 
         Label lblPresentation = new Label("Presentation:");
-        lblPresentation.setBounds(50, 160, 110, 20);
+        lblPresentation.setFont(new Font("Arial", Font.PLAIN, 24));
+        lblPresentation.setBounds(180, 337, 255, 45);
         evaluationPanel.add(lblPresentation);
 
         txtPresentation = new TextField(5);
-        txtPresentation.setBounds(170, 160, 60, 20);
+        txtPresentation.setFont(new Font("Arial", Font.PLAIN, 24));
+        txtPresentation.setBounds(450, 337, 135, 45);
         evaluationPanel.add(txtPresentation);
 
         Label lblMaxPres = new Label("/ 20");
-        lblMaxPres.setBounds(235, 160, 50, 20);
+        lblMaxPres.setFont(new Font("Arial", Font.PLAIN, 24));
+        lblMaxPres.setBounds(600, 337, 90, 45);
         evaluationPanel.add(lblMaxPres);
 
         Label lblViva = new Label("Viva:");
-        lblViva.setBounds(50, 190, 110, 20);
+        lblViva.setFont(new Font("Arial", Font.PLAIN, 24));
+        lblViva.setBounds(180, 405, 255, 45);
         evaluationPanel.add(lblViva);
 
         txtViva = new TextField(5);
-        txtViva.setBounds(170, 190, 60, 20);
+        txtViva.setFont(new Font("Arial", Font.PLAIN, 24));
+        txtViva.setBounds(450, 405, 135, 45);
         evaluationPanel.add(txtViva);
 
         Label lblMaxViva = new Label("/ 20");
-        lblMaxViva.setBounds(235, 190, 50, 20);
+        lblMaxViva.setFont(new Font("Arial", Font.PLAIN, 24));
+        lblMaxViva.setBounds(600, 405, 90, 45);
         evaluationPanel.add(lblMaxViva);
 
         Label lblInnovation = new Label("Innovation:");
-        lblInnovation.setBounds(50, 220, 110, 20);
+        lblInnovation.setFont(new Font("Arial", Font.PLAIN, 24));
+        lblInnovation.setBounds(180, 472, 255, 45);
         evaluationPanel.add(lblInnovation);
 
         txtInnovation = new TextField(5);
-        txtInnovation.setBounds(170, 220, 60, 20);
+        txtInnovation.setFont(new Font("Arial", Font.PLAIN, 24));
+        txtInnovation.setBounds(450, 472, 135, 45);
         evaluationPanel.add(txtInnovation);
 
         Label lblMaxInno = new Label("/ 10");
-        lblMaxInno.setBounds(235, 220, 50, 20);
+        lblMaxInno.setFont(new Font("Arial", Font.PLAIN, 24));
+        lblMaxInno.setBounds(600, 472, 90, 45);
         evaluationPanel.add(lblMaxInno);
 
         Label lblFeedback = new Label("Feedback:");
-        lblFeedback.setBounds(50, 260, 80, 20);
+        lblFeedback.setFont(new Font("Arial", Font.PLAIN, 24));
+        lblFeedback.setBounds(180, 547, 180, 45);
         evaluationPanel.add(lblFeedback);
 
         txtFeedback = new TextArea(4, 28);
-        txtFeedback.setBounds(50, 285, 300, 70);
+        txtFeedback.setFont(new Font("Arial", Font.PLAIN, 21));
+        txtFeedback.setBounds(180, 600, 810, 135);
         evaluationPanel.add(txtFeedback);
 
         lblEvalError = new Label("");
+        lblEvalError.setFont(new Font("Arial", Font.PLAIN, 21));
         lblEvalError.setForeground(Color.RED);
         lblEvalError.setAlignment(Label.CENTER);
-        lblEvalError.setBounds(20, 365, 400, 20);
+        lblEvalError.setBounds(60, 750, 1230, 42);
         evaluationPanel.add(lblEvalError);
 
         btnEvaluate = new Button("Evaluate");
-        btnEvaluate.setBounds(160, 395, 100, 30);
+        btnEvaluate.setFont(new Font("Arial", Font.BOLD, 24));
+        btnEvaluate.setBounds(480, 817, 240, 63);
         btnEvaluate.addActionListener(this);
         evaluationPanel.add(btnEvaluate);
     }
@@ -352,70 +395,91 @@ public class AcademicProjectApplet extends Frame implements ActionListener {
     private void createResultPanel() {
         resultPanel = new Panel();
         resultPanel.setLayout(null);
-        resultPanel.setBackground(Color.WHITE);
+        resultPanel.setBackground(new Color(250, 250, 250));
 
-        Label lblLine1 = new Label("--------------------------------");
+        Label lblLine1 = new Label("------------------------------------------------------------");
         lblLine1.setAlignment(Label.CENTER);
-        lblLine1.setBounds(20, 15, 400, 15);
+        lblLine1.setBounds(60, 33, 1230, 33);
         resultPanel.add(lblLine1);
 
         Label lblTitle = new Label("PROJECT RESULT");
-        lblTitle.setFont(new Font("Arial", Font.BOLD, 18));
+        lblTitle.setFont(new Font("Arial", Font.BOLD, 42));
         lblTitle.setAlignment(Label.CENTER);
-        lblTitle.setBounds(20, 32, 400, 25);
+        lblTitle.setBounds(60, 69, 1230, 57);
         resultPanel.add(lblTitle);
 
-        Label lblLine2 = new Label("--------------------------------");
+        Label lblLine2 = new Label("------------------------------------------------------------");
         lblLine2.setAlignment(Label.CENTER);
-        lblLine2.setBounds(20, 60, 400, 15);
+        lblLine2.setBounds(60, 129, 1230, 33);
         resultPanel.add(lblLine2);
 
         lblResultName = new Label("Student Name : ");
-        lblResultName.setBounds(50, 85, 340, 20);
+        lblResultName.setFont(new Font("Arial", Font.PLAIN, 24));
+        lblResultName.setBounds(225, 180, 900, 42);
         resultPanel.add(lblResultName);
 
         lblResultRoll = new Label("Roll Number  : ");
-        lblResultRoll.setBounds(50, 110, 340, 20);
+        lblResultRoll.setFont(new Font("Arial", Font.PLAIN, 24));
+        lblResultRoll.setBounds(225, 237, 900, 42);
         resultPanel.add(lblResultRoll);
 
         lblResultProject = new Label("Project Name : ");
-        lblResultProject.setBounds(50, 135, 340, 20);
+        lblResultProject.setFont(new Font("Arial", Font.PLAIN, 24));
+        lblResultProject.setBounds(225, 294, 900, 42);
         resultPanel.add(lblResultProject);
 
         lblResultTotal = new Label("Total Marks  : ");
-        lblResultTotal.setBounds(50, 170, 340, 20);
+        lblResultTotal.setFont(new Font("Arial", Font.PLAIN, 24));
+        lblResultTotal.setBounds(225, 366, 900, 42);
         resultPanel.add(lblResultTotal);
 
         lblResultPercentage = new Label("Percentage   : ");
-        lblResultPercentage.setBounds(50, 195, 340, 20);
+        lblResultPercentage.setFont(new Font("Arial", Font.PLAIN, 24));
+        lblResultPercentage.setBounds(225, 423, 900, 42);
         resultPanel.add(lblResultPercentage);
 
         lblResultGrade = new Label("Grade        : ");
-        lblResultGrade.setBounds(50, 220, 340, 20);
+        lblResultGrade.setFont(new Font("Arial", Font.PLAIN, 24));
+        lblResultGrade.setBounds(225, 480, 900, 42);
         resultPanel.add(lblResultGrade);
 
         lblResultStatus = new Label("Status       : ");
-        lblResultStatus.setFont(new Font("Arial", Font.BOLD, 14));
-        lblResultStatus.setBounds(50, 245, 340, 20);
+        lblResultStatus.setFont(new Font("Arial", Font.BOLD, 27));
+        lblResultStatus.setBounds(225, 537, 900, 42);
         resultPanel.add(lblResultStatus);
 
         Label lblResultFeedback = new Label("Feedback:");
-        lblResultFeedback.setBounds(50, 275, 340, 20);
+        lblResultFeedback.setFont(new Font("Arial", Font.PLAIN, 24));
+        lblResultFeedback.setBounds(225, 600, 900, 42);
         resultPanel.add(lblResultFeedback);
 
         // TextArea is used so that long feedback wraps to a new line
         txtFeedbackResult = new TextArea(3, 28);
+        txtFeedbackResult.setFont(new Font("Arial", Font.PLAIN, 21));
         txtFeedbackResult.setEditable(false);
-        txtFeedbackResult.setBounds(50, 298, 300, 55);
+        txtFeedbackResult.setBounds(225, 648, 900, 120);
         resultPanel.add(txtFeedbackResult);
 
-        Label lblLine3 = new Label("--------------------------------");
+        lblResultMessage = new Label("");
+        lblResultMessage.setFont(new Font("Arial", Font.PLAIN, 21));
+        lblResultMessage.setAlignment(Label.CENTER);
+        lblResultMessage.setBounds(60, 780, 1230, 42);
+        resultPanel.add(lblResultMessage);
+
+        Label lblLine3 = new Label("------------------------------------------------------------");
         lblLine3.setAlignment(Label.CENTER);
-        lblLine3.setBounds(20, 360, 400, 15);
+        lblLine3.setBounds(60, 828, 1230, 33);
         resultPanel.add(lblLine3);
 
+        btnSaveCSV = new Button("Save to CSV");
+        btnSaveCSV.setFont(new Font("Arial", Font.BOLD, 24));
+        btnSaveCSV.setBounds(330, 882, 300, 63);
+        btnSaveCSV.addActionListener(this);
+        resultPanel.add(btnSaveCSV);
+
         btnNewEvaluation = new Button("New Evaluation");
-        btnNewEvaluation.setBounds(150, 385, 130, 30);
+        btnNewEvaluation.setFont(new Font("Arial", Font.BOLD, 24));
+        btnNewEvaluation.setBounds(690, 882, 300, 63);
         btnNewEvaluation.addActionListener(this);
         resultPanel.add(btnNewEvaluation);
     }
@@ -438,6 +502,10 @@ public class AcademicProjectApplet extends Frame implements ActionListener {
         // Evaluate button clicked
         else if (e.getSource() == btnEvaluate) {
             handleEvaluation();
+        }
+        // Save CSV button clicked
+        else if (e.getSource() == btnSaveCSV) {
+            saveToCSV();
         }
         // New Evaluation button clicked
         else if (e.getSource() == btnNewEvaluation) {
@@ -583,6 +651,79 @@ public class AcademicProjectApplet extends Frame implements ActionListener {
     }
 
     /*
+     * Save student evaluation data to CSV file
+     */
+    private void saveToCSV() {
+        try {
+            String fileName = "student_evaluations.csv";
+            boolean fileExists = new java.io.File(fileName).exists();
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
+            if (!fileExists) {
+                writer.write("Student_Name,Roll_Number,Project_Name,Guide_Name,Project_Idea,Implementation,Documentation,Presentation,Viva,Innovation,Total_Marks,Percentage,Grade,Status,Feedback");
+                writer.newLine();
+            }
+
+            String feedback = evaluationObj.getFeedback();
+            if (feedback == null) {
+                feedback = "";
+            }
+            feedback = feedback.replace("\"", "\"\"");
+            if (feedback.contains(",") || feedback.contains("\n") || feedback.contains("\"")) {
+                feedback = "\"" + feedback + "\"";
+            }
+
+            String line = String.join(",",
+                    csvEscape(studentObj.getStudentName()),
+                    csvEscape(studentObj.getRollNumber()),
+                    csvEscape(studentObj.getProjectName()),
+                    csvEscape(studentObj.getGuideName()),
+                    String.valueOf(evaluationObj.getProjectIdea()),
+                    String.valueOf(evaluationObj.getImplementation()),
+                    String.valueOf(evaluationObj.getDocumentation()),
+                    String.valueOf(evaluationObj.getPresentation()),
+                    String.valueOf(evaluationObj.getViva()),
+                    String.valueOf(evaluationObj.getInnovation()),
+                    String.valueOf(Math.round(evaluationObj.getTotalMarks())),
+                    decimalFormat.format(evaluationObj.getPercentage()),
+                    evaluationObj.getGrade(),
+                    evaluationObj.getStatus(),
+                    feedback);
+
+            writer.write(line);
+            writer.newLine();
+            writer.close();
+
+            // Show success message
+            java.awt.Toolkit.getDefaultToolkit().beep();
+            if (lblResultMessage != null) {
+                lblResultMessage.setText("Data saved to " + fileName);
+                lblResultMessage.setForeground(new Color(0, 128, 0));
+            }
+            lblEvalError.setText("Data saved to " + fileName);
+            lblEvalError.setForeground(new Color(0, 128, 0));
+        } catch (IOException ex) {
+            if (lblResultMessage != null) {
+                lblResultMessage.setText("Error saving to CSV: " + ex.getMessage());
+                lblResultMessage.setForeground(Color.RED);
+            }
+            lblEvalError.setText("Error saving to CSV: " + ex.getMessage());
+            lblEvalError.setForeground(Color.RED);
+        }
+    }
+
+    private String csvEscape(String value) {
+        if (value == null) {
+            return "";
+        }
+        String escaped = value.replace("\"", "\"\"");
+        if (escaped.contains(",") || escaped.contains("\n") || escaped.contains("\"") || escaped.contains("\r")) {
+            return "\"" + escaped + "\"";
+        }
+        return escaped;
+    }
+
+    /*
      * New Evaluation button handling:
      * - Clear all objects
      * - Clear all text fields
@@ -609,6 +750,9 @@ public class AcademicProjectApplet extends Frame implements ActionListener {
 
         lblResultStatus.setForeground(Color.BLACK);
 
+        if (lblResultMessage != null) {
+            lblResultMessage.setText("");
+        }
         cardLayout.show(mainContainer, "STUDENT_DETAILS");
     }
 
